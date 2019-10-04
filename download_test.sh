@@ -3,7 +3,8 @@
 mkdir -p /tmp/synapse-downloader/test-files/
 mkdir -p /tmp/synapse-downloader/downloadedfiles/
 NFILES=5 # number of files to create
-MB=50 # MB file size of each file
+NDIR=5 # number of directories to create $NFILES in
+MB=25 # MB file size of each file
 CACHE_DIR=/home/kdaily/.synapseCache
 
 PROJID=$(synapse create --name 'Test Synapse Downloader' Project | grep "Create" | sed "s/.*\(syn[0-9]*\).*/\1/");
@@ -12,15 +13,21 @@ echo "#####################" ;
 echo "Creating files" ;
 echo "#####################" ;
 
-seq 1 ${NFILES} | xargs -I {} -n 1 dd status=none if=/dev/urandom of=/tmp/synapse-downloader/test-files/file{}.txt bs=1048576 count=${MB} ;
+for FOLDERNUM in $(seq 1 ${NDIR}) ; do
+    FOLDERNAME="Folder ${FOLDERNUM}";
+    FOLDERID=$(synapse create --name "${FOLDERNAME}" Folder --parentId ${PROJID} | grep "Create" | sed "s/.*\(syn[0-9]*\).*/\1/");
 
-echo "#####################" ;
-echo "Storing to Synapse" ;
-echo "#####################" ;
+    seq 1 ${NFILES} | xargs -I {} -n 1 dd status=none if=/dev/urandom of=/tmp/synapse-downloader/test-files/file{}.txt bs=1048576 count=${MB} ;
 
-seq 1 ${NFILES} | xargs -I {} -n 1 -P 4 synapse store --parentId ${PROJID} /tmp/synapse-downloader/test-files/file{}.txt > /dev/null 2>&1 ;
+    echo "#####################" ;
+    echo "Storing to Synapse" ;
+    echo "#####################" ;
 
-rm /tmp/synapse-downloader/test-files/file*.txt ;
+    seq 1 ${NFILES} | xargs -I {} -n 1 -P 4 synapse store --parentId ${FOLDERID} /tmp/synapse-downloader/test-files/file{}.txt > /dev/null 2>&1 ;
+
+    rm /tmp/synapse-downloader/test-files/file*.txt ;
+done
+
 
 for METHOD in new old sync ; do
 
@@ -44,7 +51,7 @@ for METHOD in new old sync ; do
     echo "Cleanup" ;
     echo "#####################" ;
 
-    rm /tmp/synapse-downloader/downloadedfiles/file*.txt ;
+    rm /tmp/synapse-downloader/downloadedfiles/* ;
     rm -rf ${CACHE_DIR}* ; # Clear the Synapse cache so that it's not used
 done
 
