@@ -4,6 +4,7 @@ mkdir -p /tmp/synapse-downloader/test-files/
 mkdir -p /tmp/synapse-downloader/downloadedfiles/
 NFILES=5 # number of files to create
 MB=50 # MB file size of each file
+CACHE_DIR=/home/kdaily/.synapseCache
 
 PROJID=$(synapse create --name 'Test Synapse Downloader' Project | grep "Create" | sed "s/.*\(syn[0-9]*\).*/\1/");
 
@@ -19,6 +20,8 @@ echo "#####################" ;
 
 seq 1 ${NFILES} | xargs -I {} -n 1 -P 4 synapse store --parentId ${PROJID} /tmp/synapse-downloader/test-files/file{}.txt 2> /dev/null;
 
+rm /tmp/synapse-downloader/downloadedfiles/file*.txt ;
+
 for METHOD in new old sync ; do
 
     echo "#####################" ;
@@ -29,7 +32,7 @@ for METHOD in new old sync ; do
     echo "Clear cache" ;
     echo "#####################" ;
 
-    rm -rf /tmp/synapseCache/* ; # Clear the Synapse cache so that it's not used
+    rm -rf ${CACHE_DIR}* ; # Clear the Synapse cache so that it's not used
     rm /tmp/synapse-downloader/test-files/file*.txt ;
 
     echo "#####################" ;
@@ -42,8 +45,7 @@ for METHOD in new old sync ; do
     echo "Cleanup" ;
     echo "#####################" ;
 
-    rm /tmp/synapse-downloader/downloadedfiles/file*.txt ;
-    rm -rf /tmp/synapseCache/* ;
+    rm -rf ${CACHE_DIR}* ; # Clear the Synapse cache so that it's not used
 done
 
 synapse delete ${PROJID} ;
