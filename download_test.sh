@@ -47,6 +47,7 @@ for METHOD in new old sync ; do
 
     rm -rf /tmp/synapse-downloader/downloadedfiles/* ;
     rm -rf ${CACHE_DIR}* ; # Clear the Synapse cache so that it's not used
+    synapse delete ${PROJID} ;
+
 done
 
-synapse delete ${PROJID} ;
