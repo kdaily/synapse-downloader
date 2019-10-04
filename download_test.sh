@@ -20,7 +20,7 @@ echo "#####################" ;
 
 seq 1 ${NFILES} | xargs -I {} -n 1 -P 4 synapse store --parentId ${PROJID} /tmp/synapse-downloader/test-files/file{}.txt > /dev/null 2>&1 ;
 
-rm /tmp/synapse-downloader/downloadedfiles/file*.txt ;
+rm /tmp/synapse-downloader/test-files/file*.txt ;
 
 for METHOD in new old sync ; do
 
@@ -33,7 +33,6 @@ for METHOD in new old sync ; do
     echo "#####################" ;
 
     rm -rf ${CACHE_DIR}* ; # Clear the Synapse cache so that it's not used
-    rm /tmp/synapse-downloader/test-files/file*.txt ;
 
     echo "#####################" ;
     echo "Download" ;
@@ -45,6 +44,7 @@ for METHOD in new old sync ; do
     echo "Cleanup" ;
     echo "#####################" ;
 
+    rm /tmp/synapse-downloader/downloadedfiles/file*.txt ;
     rm -rf ${CACHE_DIR}* ; # Clear the Synapse cache so that it's not used
 done
 
