@@ -2,6 +2,7 @@ from .synapse_downloader import SynapseDownloader
 from .synapse_downloader_file_view import SynapseDownloaderFileView
 from .synapse_downloader_file_view_no_aio import SynapseDownloaderFileViewNoAio
 from .synapse_downloader_old import SynapseDownloaderOld
+from .synapse_downloader_sync import SynapseDownloaderSync
 import argparse
 import logging
 
@@ -16,7 +17,7 @@ def main(args=None):
     parser.add_argument('-l', '--log-level', help='Set the logging level.', default='INFO')
 
     parser.add_argument('-s', '--strategy', help='Use the new or old download strategy', default='new',
-                        choices=['new', 'new-file-view', 'new-file-view-no-aio', 'old'])
+                        choices=['new', 'new-file-view', 'new-file-view-no-aio', 'old', 'sync'])
 
     args = parser.parse_args(args)
 
@@ -32,6 +33,11 @@ def main(args=None):
                              args.download_path,
                              username=args.username,
                              password=args.password).execute()
+    elif args.strategy == 'sync':
+        SynapseDownloaderSync(args.entity_id,
+                              args.download_path,
+                              username=args.username,
+                              password=args.password).execute()
     elif args.strategy == 'new-file-view':
         SynapseDownloaderFileView(args.entity_id,
                                   args.download_path,
