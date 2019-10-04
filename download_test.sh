@@ -18,7 +18,7 @@ echo "#####################" ;
 echo "Storing to Synapse" ;
 echo "#####################" ;
 
-seq 1 ${NFILES} | xargs -I {} -n 1 -P 4 synapse store --parentId ${PROJID} /tmp/synapse-downloader/test-files/file{}.txt 2> /dev/null;
+seq 1 ${NFILES} | xargs -I {} -n 1 -P 4 synapse store --parentId ${PROJID} /tmp/synapse-downloader/test-files/file{}.txt > /dev/null 2>&1 ;
 
 rm /tmp/synapse-downloader/downloadedfiles/file*.txt ;
 
